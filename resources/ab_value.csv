@@ -1,0 +1,3 @@
+id,group,value,probability,is_default
+1,1,recommendation_by_additive_function,90,1
+2,1,recommendation_by_random,10,0
