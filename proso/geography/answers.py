@@ -5,6 +5,7 @@ Basic functionality to work with answer data.
 """
 
 from util import load_csv
+from numpy import uint32, uint16, uint8, float16
 
 
 def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None):
@@ -24,7 +25,18 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
     Returns:
         pandas.DataFrame
     """
-    answers = load_csv(answer_csv)
+    col_types = {
+        'user': uint32,
+        'id': uint32,
+        'place_asked': uint16,
+        'place_answered': float16,  # because of NAs
+        'type': uint8,
+        'response_time': uint32,
+        'number_of_options': uint8,
+        'place_map': float16,       # because of NAs
+        'ip_address': str,
+    }
+    answers = load_csv(answer_csv, col_types)
     if answer_options_csv:
         options_from_csv(answers, answer_options_csv)
     if ab_value_csv and answer_ab_values_csv:
@@ -48,8 +60,8 @@ def ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv):
     Returns:
         pandas.DataFrame
     """
-    ab_values = load_csv(ab_value_csv)
-    answer_ab_values = load_csv(answer_ab_values_csv)
+    ab_values = load_csv(ab_value_csv, col_dates=[])
+    answer_ab_values = load_csv(answer_ab_values_csv, col_dates=[])
     ab_values_dict = {}
     answer_ab_values_dict = {}
     for i, row in ab_values.iterrows():
@@ -77,10 +89,18 @@ def options_from_csv(answers, answer_options_csv):
         pandas.DataFrame
     """
     options = load_csv(answer_options_csv)
+    options.sort(['answer', 'id'], inplace=True)
     options_dict = {}
+    last_answer = None
+    collected_options = None
     for i, row in options.iterrows():
-        if row['answer'] not in options_dict:
-            options_dict[row['answer']] = []
-        options_dict[row['answer']].append(row['place'])
+        if last_answer != row['answer']:
+            if collected_options:
+                options_dict[last_answer] = collected_options
+            collected_options = []
+        collected_options.append(row['place'])
+        last_answer = row['answer']
+    if collected_options:
+        options_dict[last_answer] = collected_options
     answers['options'] = answers['id'].map(lambda id: options_dict.get(id, []))
     return answers

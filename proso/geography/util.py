@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-from pandas import DataFrame
+from pandas import read_csv
 
 
-def load_csv(csv_file):
-    data = DataFrame.from_csv(csv_file, index_col=False)
+def load_csv(csv_file, col_types=None, col_dates=[]):
+    data = read_csv(
+        csv_file,
+        index_col=False,
+        dtype=col_types,
+        parse_dates=col_dates if col_dates else [])
     for column in data.columns:
-        if column == 'inserted':
-            data['inserted'] = data['inserted'].apply(convert_time)
-        elif column == 'id':
+        if column == 'id':
             data.sort(['id'], inplace=True, ascending=True)
         elif is_list_column(data[column]):
             data[column] = data[column].apply(lambda x: str2list(x, int))
     return data
-
-
-def convert_time(value):
-    return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
 
 
 def str2list(x, convert_item=None):

@@ -12,6 +12,7 @@ setup(
     license='Gnu GPL v3',
     url='https://github.com/proso/geography-data-libs/',
     install_requires=[
+        'numpy>=1.8',
         'pandas>=0.13'
     ],
 )
