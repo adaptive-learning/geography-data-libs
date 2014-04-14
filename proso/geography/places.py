@@ -4,7 +4,7 @@
 Basic functionality to work with place data.
 """
 
-from util import load_csv
+from dfutil import load_csv
 
 
 def from_csv(place_csv, placerelation_csv=None, placerelation_related_places_csv=None):

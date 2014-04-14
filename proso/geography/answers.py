@@ -4,7 +4,7 @@
 Basic functionality to work with answer data.
 """
 
-from util import load_csv
+from dfutil import load_csv
 from numpy import uint32, uint16, uint8, float16
 
 
