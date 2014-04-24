@@ -4,8 +4,8 @@
 Basic functionality to work with answer data.
 """
 
-from dfutil import load_csv
-from numpy import uint32, uint16, uint8, float16
+import dfutil
+import numpy as np
 
 
 def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None):
@@ -26,17 +26,17 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         pandas.DataFrame
     """
     col_types = {
-        'user': uint32,
-        'id': uint32,
-        'place_asked': uint16,
-        'place_answered': float16,  # because of NAs
-        'type': uint8,
-        'response_time': uint32,
-        'number_of_options': uint8,
-        'place_map': float16,       # because of NAs
+        'user': np.uint32,
+        'id': np.uint32,
+        'place_asked': np.uint16,
+        'place_answered': np.float16,  # because of NAs
+        'type': np.uint8,
+        'response_time': np.uint32,
+        'number_of_options': np.uint8,
+        'place_map': np.float16,       # because of NAs
         'ip_address': str,
     }
-    answers = load_csv(answer_csv, col_types)
+    answers = dfutil.load_csv(answer_csv, col_types)
     if answer_options_csv:
         options_from_csv(answers, answer_options_csv)
     if ab_value_csv and answer_ab_values_csv:
@@ -60,8 +60,8 @@ def ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv):
     Returns:
         pandas.DataFrame
     """
-    ab_values = load_csv(ab_value_csv, col_dates=[])
-    answer_ab_values = load_csv(answer_ab_values_csv, col_dates=[])
+    ab_values = dfutil.load_csv(ab_value_csv, col_dates=[])
+    answer_ab_values = dfutil.load_csv(answer_ab_values_csv, col_dates=[])
     ab_values_dict = {}
     answer_ab_values_dict = {}
     for i, row in ab_values.iterrows():
@@ -88,7 +88,7 @@ def options_from_csv(answers, answer_options_csv):
     Returns:
         pandas.DataFrame
     """
-    options = load_csv(answer_options_csv)
+    options = dfutil.load_csv(answer_options_csv)
     options.sort(['answer', 'id'], inplace=True)
     options_dict = {}
     last_answer = None
