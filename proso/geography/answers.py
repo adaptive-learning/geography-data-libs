@@ -36,7 +36,7 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         'place_map': np.float16,       # because of NAs
         'ip_address': str,
     }
-    answers = dfutil.load_csv(answer_csv, col_types)
+    answers = dfutil.load_csv(answer_csv, col_types, col_dates=['inserted'])
     if answer_options_csv:
         options_from_csv(answers, answer_options_csv)
     if ab_value_csv and answer_ab_values_csv:
