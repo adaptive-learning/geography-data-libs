@@ -64,12 +64,12 @@ def ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv):
     answer_ab_values = dfutil.load_csv(answer_ab_values_csv, col_dates=[])
     ab_values_dict = {}
     answer_ab_values_dict = {}
-    for i, row in ab_values.iterrows():
-        ab_values_dict[row['id']] = row['value']
-    for i, row in answer_ab_values.iterrows():
-        if row['answer'] not in answer_ab_values_dict:
-            answer_ab_values_dict[row['answer']] = []
-        answer_ab_values_dict[row['answer']].append(ab_values_dict[row['value']])
+    for ab_id, val in zip(ab_values['id'].values, ab_values['value'].values):
+        ab_values_dict[ab_id] = val
+    for answer, value in zip(answer_ab_values['answer'].values, answer_ab_values['value'].values):
+        if answer not in answer_ab_values_dict:
+            answer_ab_values_dict[answer] = []
+        answer_ab_values_dict[answer].append(ab_values_dict[value])
     answers['ab_values'] = answers['id'].map(lambda id: answer_ab_values_dict.get(id, []))
     return answers
 
@@ -93,13 +93,13 @@ def options_from_csv(answers, answer_options_csv):
     options_dict = {}
     last_answer = None
     collected_options = None
-    for i, row in options.iterrows():
-        if last_answer != row['answer']:
+    for answer, place in zip(options['answer'].values, options['place'].values):
+        if last_answer != answer:
             if collected_options:
                 options_dict[last_answer] = collected_options
             collected_options = []
-        collected_options.append(row['place'])
-        last_answer = row['answer']
+        collected_options.append(place)
+        last_answer = answer
     if collected_options:
         options_dict[last_answer] = collected_options
     answers['options'] = answers['id'].map(lambda id: options_dict.get(id, []))
