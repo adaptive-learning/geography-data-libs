@@ -25,6 +25,6 @@ uninstall:
 	pip uninstall --yes proso-geography-data
 
 check:
-	pep8 --exclude=migrations --ignore=E501,E225,E123 proso
+	pep8 --exclude=migrations --ignore=E501,E225,E123,E128 proso
 	pyflakes proso
 

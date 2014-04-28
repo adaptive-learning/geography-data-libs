@@ -8,6 +8,25 @@ import dfutil
 import numpy as np
 
 
+def first_answers(answers, group):
+    '''
+    Returns first answers with the given group only
+
+    Args:
+        answers (pandas.DataFrame):
+            dataframe containing answer data
+        group (list):
+            pandas group used to groupby the data frame
+    Returns:
+        pandas.DataFrame
+    '''
+    return (answers.
+        groupby(group).
+        apply(lambda x: x.drop_duplicates('place_asked')).
+        set_index('id').
+        reset_index())
+
+
 def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None):
     """
     Loads answer data from the given CSV files.
