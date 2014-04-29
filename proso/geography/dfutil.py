@@ -2,6 +2,24 @@
 from pandas import read_csv
 
 
+class DictIterator:
+
+    def __init__(self, dataframe):
+        self._dataframe = dataframe
+
+    def __iter__(self):
+        self._iter = self._dataframe.values.__iter__()
+        self._columns = self._dataframe.columns.values
+        return self
+
+    def next(self):
+        return dict(zip(self._columns, self._iter.next()))
+
+
+def iterdicts(dataframe):
+    return DictIterator(dataframe)
+
+
 def load_csv(csv_file, col_types=None, col_dates=[]):
     data = read_csv(
         csv_file,
