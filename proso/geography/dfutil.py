@@ -35,7 +35,10 @@ def load_csv(csv_file, col_types=None, col_dates=[]):
 
 
 def str2list(x, convert_item=None):
-    s = x.strip('[]').replace(' ', '').split(',')
+    s = x.strip('[]').replace(' ', '')
+    if not s:
+        return []
+    s = s.split(',')
     if convert_item:
         s = map(convert_item, s)
     return s
