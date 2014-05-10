@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
+VERSION = '0.9.8'
+
 
 setup(
     name='proso-geography-data',
-    version='0.9.7',
+    version=VERSION,
     description='Libs for manipulation with data from PROSO Geography project',
     author='Jan Papousek',
     author_email='jan.papousek@gmail.com',
