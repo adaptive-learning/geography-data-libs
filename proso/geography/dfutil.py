@@ -30,7 +30,8 @@ def load_csv(csv_file, col_types=None, col_dates=[]):
         if column == 'id':
             data.sort(['id'], inplace=True, ascending=True)
         elif is_list_column(data[column]):
-            data[column] = data[column].apply(lambda x: str2list(x, int))
+            data[column] = data[column].apply(
+                lambda x: str2list(x, lambda x: int(x) if x.isdigit() else x))
     return data
 
 
