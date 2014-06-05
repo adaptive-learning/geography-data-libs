@@ -41,7 +41,7 @@ def str2list(x, convert_item=None):
         return []
     s = s.split(',')
     if convert_item:
-        s = map(convert_item, s)
+        s = map(lambda x: convert_item(x.replace("'", '').replace("\"", '')), s)
     return s
 
 
