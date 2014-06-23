@@ -21,6 +21,7 @@ def first_answers(answers, group):
         pandas.DataFrame
     '''
     return (answers.
+        sort('id').
         groupby(group).
         apply(lambda x: x.drop_duplicates('place_asked')).
         set_index('id').
