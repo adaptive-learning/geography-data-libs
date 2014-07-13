@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pandas import read_csv
+from pandas import read_csv, Series
 
 
 class DictIterator:
@@ -14,6 +14,30 @@ class DictIterator:
 
     def next(self):
         return dict(zip(self._columns, self._iter.next()))
+
+
+def apply_rows(dataframe, fun):
+    """
+    Applies the given funtion to each row of the given dataframe
+    and returns Series with the result.
+
+    This function has the same semantic as extremely slow calling:
+
+        dataframe.apply(fun, axis=1)
+
+    Args:
+        dataframe (pandas.DataFrame):
+            dataframe which is used for the application
+        fun (function):
+            function to apply to each row (represented as dict)
+
+    Returns:
+        pandas.DataFrame
+    """
+    result = []
+    for d in iterdicts(dataframe):
+        result.append(fun(d))
+    return Series(result, index=dataframe.index)
 
 
 def iterdicts(dataframe):
