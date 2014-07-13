@@ -6,6 +6,7 @@ Basic functionality to work with answer data.
 
 import dfutil
 import numpy as np
+import random
 
 
 def first_answers(answers, group):
@@ -86,6 +87,31 @@ def apply_filter(answers, filter_fun, drop_users=True):
         invalid_users = answers[~validity]['user'].unique()
         valid_answers = valid_answers[~valid_answers['user'].isin(invalid_users)]
     return valid_answers
+
+
+def anonymize(answers):
+    """
+    Tries to drop all information which can be used to determine the user's
+    identity from the answer data.
+
+    Args:
+        answers (pandas.DataFrame)
+            dataframe containing answer data
+        filter_fun (function):
+            row predicate
+        drop_users (bool, optional):
+            enables/disables dropping users
+
+    Returns:
+        pandas.DataFrame
+    """
+    users = range(1, answers['user'].max() + 1)
+    random.shuffle(users)
+    users = dict(zip(range(1, answers['user'].max() + 1), users))
+    answers['user'] = answers['user'].apply(lambda x: users[x])
+    if 'ip_address' in answers:
+        answers.drop('ip_address', axis=1, inplace=True)
+    return answers
 
 
 def ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv):
