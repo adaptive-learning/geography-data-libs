@@ -17,6 +17,17 @@ class DictIterator:
 
 
 def iterdicts(dataframe):
+    """
+    Allows you to efficiently iterate over the dataframe.
+
+    Args:
+        dataframe (pandas.DataFrame):
+            dataframe to iterate
+
+    Returns:
+        iterator allowing you to iterate over the dataframe providing rows as
+        dicts
+    """
     return DictIterator(dataframe)
 
 
