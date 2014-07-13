@@ -64,6 +64,30 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
     return answers
 
 
+def apply_filter(answers, filter_fun, drop_users=True):
+    """
+    Filters the answers by the given filter and drops the users whose answers
+    are filtered out (if enabled).
+
+    Args:
+        answers (pandas.DataFrame)
+            dataframe containing answer data
+        filter_fun (function):
+            row predicate
+        drop_users (bool, optional):
+            enables/disables dropping users
+
+    Returns:
+        pandas.DataFrame
+    """
+    validity = dfutil.apply_rows(answers, filter_fun)
+    valid_answers = answers[validity]
+    if drop_users:
+        invalid_users = answers[~validity]['user'].unique()
+        valid_answers = valid_answers[~valid_answers['user'].isin(invalid_users)]
+    return valid_answers
+
+
 def ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv):
     """
     Loads A/B values to the answers data frame.
