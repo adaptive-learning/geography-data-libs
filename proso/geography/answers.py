@@ -114,6 +114,27 @@ def anonymize(answers):
     return answers
 
 
+def sample(answers, ratio):
+    """
+    Divides data to sample set and the data holding the given percentage given
+    by 'ratio' parameter.
+
+
+    Args:
+        answers (pandas.DataFrame)
+            dataframe containing answer data
+        ratio (float):
+            number from the interval (0, 1) specifying the size of the sample set
+
+    Returns:
+        pandas.DataFrame, pandas.DataFrame
+    """
+    if ratio <= 0 or ratio >= 1:
+        raise Exception('parameter ratio has to be a value from the interval (0, 1)')
+    users = random.sample(answers['user'].unique(), int(ratio * len(answers['user'].unique())))
+    return answers[answers['user'].isin(users)], answers[~answers['user'].isin(users)]
+
+
 def ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv):
     """
     Loads A/B values to the answers data frame.
