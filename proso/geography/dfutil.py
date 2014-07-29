@@ -12,6 +12,9 @@ class DictIterator:
         self._columns = self._dataframe.columns.values
         return self
 
+    def __len__(self):
+        return len(self._dataframe)
+
     def next(self):
         return dict(zip(self._columns, self._iter.next()))
 
