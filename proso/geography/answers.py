@@ -29,6 +29,45 @@ def first_answers(answers, group):
         reset_index())
 
 
+def drop_users_by_answers(answers, answer_limit=10):
+    """
+    Drop users having less than the given number of answers.
+    """
+    valid_users = map(
+        lambda (u, n): u,
+        filter(
+            lambda (u, n): n >= answer_limit,
+            answers.groupby('user').apply(len).to_dict().items()
+        )
+    )
+    return answers[answers['user'].isin(valid_users)]
+
+
+def drop_classrooms(answers, classroom_size=5):
+    """
+    Use a heuristic to filter out users from classrooms. Be aware the function
+    also drops all answer which do not have IP address.
+
+    Args:
+        answers (pandas.DataFrame)
+            dataframe containing answer data
+    Returns
+        pandas.DataFrame
+    """
+    classroom_users = [
+        user
+        for ip, users in (
+            answers.sort('id').drop_duplicates('user').
+            groupby('ip_address').
+            apply(lambda x: x['user'].unique()).
+            to_dict().
+            items())
+        for user in users
+        if len(users) > classroom_size
+    ]
+    return answers[~answers['user'].isin(classroom_users)]
+
+
 def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None):
     """
     Loads answer data from the given CSV files.
