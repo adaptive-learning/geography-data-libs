@@ -29,14 +29,14 @@ def first_answers(answers, group):
         reset_index())
 
 
-def drop_users_by_answers(answers, answer_limit=10):
+def drop_users_by_answers(answers, answer_limit_min=None, answer_limit_max=None):
     """
     Drop users having less than the given number of answers.
     """
     valid_users = map(
         lambda (u, n): u,
         filter(
-            lambda (u, n): n >= answer_limit,
+            lambda (u, n): (answer_limit_min is None or n >= answer_limit_min) and (answer_limit_max is None or n <= answer_limit_max),
             answers.groupby('user').apply(len).to_dict().items()
         )
     )
