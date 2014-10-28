@@ -68,7 +68,7 @@ def drop_classrooms(answers, classroom_size=5):
     return answers[~answers['user'].isin(classroom_users)]
 
 
-def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None):
+def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None, answers_col_types=None, should_sort=True):
     """
     Loads answer data from the given CSV files.
 
@@ -96,7 +96,11 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         'place_map': np.float16,       # because of NAs
         'ip_address': str,
     }
-    answers = dfutil.load_csv(answer_csv, col_types, col_dates=['inserted'])
+    if answers_col_types:
+        for col_name, col_type in answers_col_types.iteritems():
+            col_types[col_name] = col_type
+    answers = dfutil.load_csv(
+        answer_csv, col_types, col_dates=['inserted'], should_sort=should_sort)
     if answer_options_csv:
         options_from_csv(answers, answer_options_csv)
     if ab_value_csv and answer_ab_values_csv:

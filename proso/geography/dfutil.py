@@ -58,14 +58,14 @@ def iterdicts(dataframe):
     return DictIterator(dataframe)
 
 
-def load_csv(csv_file, col_types=None, col_dates=[]):
+def load_csv(csv_file, col_types=None, col_dates=[], should_sort=True):
     data = read_csv(
         csv_file,
         index_col=False,
         dtype=col_types,
         parse_dates=col_dates if col_dates else [])
     for column in data.columns:
-        if column == 'id':
+        if column == 'id' and should_sort:
             data.sort(['id'], inplace=True, ascending=True)
         elif is_list_column(data[column]):
             data[column] = data[column].apply(
