@@ -95,6 +95,8 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         'number_of_options': np.uint8,
         'place_map': np.float16,       # because of NAs
         'ip_address': str,
+        'language': str,
+        'test_id': np.float16          # because of NAs
     }
     if answers_col_types:
         for col_name, col_type in answers_col_types.iteritems():
