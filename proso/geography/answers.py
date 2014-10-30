@@ -7,6 +7,7 @@ Basic functionality to work with answer data.
 import dfutil
 import numpy as np
 import random
+import pandas
 
 
 def first_answers(answers, group):
@@ -68,7 +69,7 @@ def drop_classrooms(answers, classroom_size=5):
     return answers[~answers['user'].isin(classroom_users)]
 
 
-def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None, answers_col_types=None, should_sort=True):
+def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None, place_csv=None, answers_col_types=None, should_sort=True):
     """
     Loads answer data from the given CSV files.
 
@@ -107,6 +108,14 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         options_from_csv(answers, answer_options_csv)
     if ab_value_csv and answer_ab_values_csv:
         ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv)
+    if place_csv:
+        places_original = dfutil.load_csv(place_csv)
+        places = pandas.DataFrame(index=places_original.index, columns=['id', 'code'])
+        places['id'] = places_original['id']
+        places['code'] = places_original['code']
+        answers = pandas.merge(answers, places.rename(columns={'id': 'place_asked', 'code': 'place_asked_code'}), on='place_asked', how='left')
+        answers = pandas.merge(answers, places.rename(columns={'id': 'place_answered', 'code': 'place_answered_code'}), on='place_answered', how='left')
+        answers = pandas.merge(answers, places.rename(columns={'id': 'place_map', 'code': 'place_map_code'}), on='place_map', how='left')
     return answers
 
 

@@ -11,7 +11,8 @@ class TestBasics(unittest.TestCase):
             answer_csv=os.environ['RESOURCES_DIR'] + '/answer.csv',
             answer_options_csv=os.environ['RESOURCES_DIR'] + '/answer_options.csv',
             answer_ab_values_csv=os.environ['RESOURCES_DIR'] + '/answer_ab_values.csv',
-            ab_value_csv=os.environ['RESOURCES_DIR'] + '/ab_value.csv'
+            ab_value_csv=os.environ['RESOURCES_DIR'] + '/ab_value.csv',
+            place_csv=os.environ['RESOURCES_DIR'] + '/place.csv'
             )
         self.assertEqual(len(data), 4)
         options = sorted(list(data.head().options)[0])
