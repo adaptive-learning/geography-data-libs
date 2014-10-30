@@ -9,6 +9,24 @@ import numpy as np
 import random
 import pandas
 
+PLACE_TYPES = {
+    0: 'unknown',
+    1: 'state',
+    2: 'city',
+    3: 'world',
+    4: 'continent',
+    5: 'river',
+    6: 'lake',
+    7: 'region_cz',
+    8: 'bundesland',
+    9: 'province',
+    10: 'region_it',
+    11: 'region',
+    12: 'autonumous_comunity',
+    13: 'mountains',
+    14: 'island'
+}
+
 
 def first_answers(answers, group):
     '''
@@ -110,12 +128,13 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         ab_values_from_csv(answers, ab_value_csv, answer_ab_values_csv)
     if place_csv:
         places_original = dfutil.load_csv(place_csv)
-        places = pandas.DataFrame(index=places_original.index, columns=['id', 'code'])
+        places = pandas.DataFrame(index=places_original.index, columns=['id', 'code', 'type'])
         places['id'] = places_original['id']
         places['code'] = places_original['code']
-        answers = pandas.merge(answers, places.rename(columns={'id': 'place_asked', 'code': 'place_asked_code'}), on='place_asked', how='left')
-        answers = pandas.merge(answers, places.rename(columns={'id': 'place_answered', 'code': 'place_answered_code'}), on='place_answered', how='left')
-        answers = pandas.merge(answers, places.rename(columns={'id': 'place_map', 'code': 'place_map_code'}), on='place_map', how='left')
+        places['type'] = places_original['type'].apply(lambda x: PLACE_TYPES.get(x, 'unknown'))
+        answers = pandas.merge(answers, places.rename(columns={'id': 'place_asked', 'code': 'place_asked_code', 'type': 'place_asked_type'}), on='place_asked', how='left')
+        answers = pandas.merge(answers, places.rename(columns={'id': 'place_answered', 'code': 'place_answered_code', 'type': 'place_answered_type'}), on='place_answered', how='left')
+        answers = pandas.merge(answers, places.rename(columns={'id': 'place_map', 'code': 'place_map_code', 'type': 'place_map_type'}), on='place_map', how='left')
     return answers
 
 
