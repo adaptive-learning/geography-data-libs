@@ -71,8 +71,9 @@ def drop_classrooms(answers, classroom_size=5):
         answers (pandas.DataFrame)
             dataframe containing answer data
     Returns
-        pandas.DataFrame
+        pandas.DataFrame, pandas.DataFrame
     """
+    answers = answers[~answers['ip_address'].isin([None, ''])]
     classroom_users = [
         user
         for ip, users in (
@@ -84,7 +85,9 @@ def drop_classrooms(answers, classroom_size=5):
         for user in users
         if len(users) > classroom_size
     ]
-    return answers[~answers['user'].isin(classroom_users)]
+    classroom_free_answers = answers[~answers['user'].isin(classroom_users)]
+    classroom_answers = answers[answers['user'].isin(classroom_users)]
+    return classroom_free_answers, classroom_answers
 
 
 def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_value_csv=None, place_csv=None, answers_col_types=None, should_sort=True):
