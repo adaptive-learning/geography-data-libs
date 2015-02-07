@@ -124,7 +124,7 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         for col_name, col_type in answers_col_types.iteritems():
             col_types[col_name] = col_type
     answers = dfutil.load_csv(
-        answer_csv, col_types, col_dates=['inserted'], should_sort=should_sort)
+        answer_csv, col_types, col_dates=['inserted'], should_sort=False)
     if answer_options_csv:
         options_from_csv(answers, answer_options_csv)
     if ab_value_csv and answer_ab_values_csv:
@@ -138,6 +138,8 @@ def from_csv(answer_csv, answer_options_csv=None, answer_ab_values_csv=None, ab_
         answers = pandas.merge(answers, places.rename(columns={'id': 'place_asked', 'code': 'place_asked_code', 'type': 'place_asked_type'}), on='place_asked', how='left')
         answers = pandas.merge(answers, places.rename(columns={'id': 'place_answered', 'code': 'place_answered_code', 'type': 'place_answered_type'}), on='place_answered', how='left')
         answers = pandas.merge(answers, places.rename(columns={'id': 'place_map', 'code': 'place_map_code', 'type': 'place_map_type'}), on='place_map', how='left')
+    if should_sort:
+        answers.sort(['id'], inplace=True, ascending=True)
     return answers
 
 
